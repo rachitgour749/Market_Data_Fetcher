@@ -1,0 +1,146 @@
+{
+  "timezone": "Asia/Kolkata",
+  "trading_calendar": {
+    "nse_holidays_2025": [
+      "2025-01-26",
+      "2025-03-14",
+      "2025-03-31",
+      "2025-04-10",
+      "2025-04-14",
+      "2025-04-18",
+      "2025-05-01",
+      "2025-06-07",
+      "2025-08-15",
+      "2025-08-27",
+      "2025-10-02",
+      "2025-10-21",
+      "2025-11-01",
+      "2025-11-05",
+      "2025-11-24",
+      "2025-12-25"
+    ],
+    "weekend_days": [
+      5,
+      6
+    ]
+  },
+  "strategies": {
+    "rotation_etf": {
+      "enabled": true,
+      "signal_generation": {
+        "frequency": "weekly",
+        "day_of_week": "monday",
+        "time": "15:52",
+        "skip_holidays": true
+      },
+      "signal_execution": {
+        "frequency": "weekly",
+        "execution_rule": "first_trading_day_of_week",
+        "time": "10:20",
+        "skip_holidays": true
+      },
+      "generator_module": "Strategies.Rotation_ETF.services.signal_generator",
+      "generator_class": "LiveETFSignalGenerator",
+      "signal_table": "etf_signal",
+      "strategy_table": "etf_saved_strategy"
+    },
+    "rotation_stocks": {
+      "enabled": true,
+      "signal_generation": {
+        "frequency": "weekly",
+        "day_of_week": "monday",
+        "time": "06:00",
+        "skip_holidays": true
+      },
+      "signal_execution": {
+        "frequency": "weekly",
+        "execution_rule": "first_trading_day_of_week",
+        "time": "10:00",
+        "skip_holidays": true
+      },
+      "generator_module": "Strategies.Rotation_Stocks.services.signal_generator",
+      "generator_class": "LiveStockSignalGenerator",
+      "signal_table": "stock_signal",
+      "strategy_table": "stock_saved_strategy"
+    },
+    "market_data_etf": {
+      "enabled": true,
+      "data_fetch": {
+        "frequency": "daily",
+        "time": "23:40",
+        "skip_holidays": true,
+        "skip_weekends": true
+      },
+      "fetch_module": "Market_Data.etf_data",
+      "fetch_function": "main",
+      "description": "Daily ETF EOD data fetch"
+    },
+    "market_data_stock": {
+      "enabled": true,
+      "data_fetch": {
+        "frequency": "daily",
+        "time": "22:00",
+        "skip_holidays": true,
+        "skip_weekends": true
+      },
+      "fetch_module": "Market_Data.stock_data",
+      "fetch_function": "main",
+      "description": "Daily Stock EOD data fetch"
+    },
+    "market_data_index": {
+      "enabled": true,
+      "data_fetch": {
+        "frequency": "daily",
+        "time": "22:30",
+        "skip_holidays": true,
+        "skip_weekends": true
+      },
+      "fetch_module": "Market_Data.index_data",
+      "fetch_function": "main",
+      "description": "Daily Index EOD data fetch"
+    },
+    "market_data_us_etf": {
+      "enabled": true,
+      "data_fetch": {
+        "frequency": "daily",
+        "time": "02:00",
+        "skip_holidays": true,
+        "skip_weekends": true
+      },
+      "fetch_module": "Market_Data.us_etf_data",
+      "fetch_function": "main",
+      "description": "Daily US ETF EOD data fetch"
+    },
+    "rs_etf_daily": {
+      "enabled": false,
+      "signal_generation": {
+        "frequency": "daily",
+        "time": "18:00",
+        "skip_holidays": true,
+        "skip_weekends": true
+      },
+      "signal_execution": {
+        "frequency": "daily",
+        "execution_rule": "next_trading_day",
+        "time": "09:15",
+        "skip_holidays": true
+      },
+      "generator_module": "Strategies.RS_ETF.services.signal_generator",
+      "generator_class": "RSETFSignalGenerator",
+      "signal_table": "rs_etf_signal",
+      "strategy_table": "rs_etf_saved_strategies"
+    }
+  },
+  "execution_settings": {
+    "max_retries": 3,
+    "retry_delay_minutes": 5,
+    "webhook_timeout_seconds": 30,
+    "cleanup_executed_signals": false
+  },
+  "logging": {
+    "level": "INFO",
+    "log_dir": "logs",
+    "max_file_size_mb": 10,
+    "backup_count": 5
+  }
+}
