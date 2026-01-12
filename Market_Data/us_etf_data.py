@@ -219,9 +219,9 @@ class USEtfDownloader:
         
         logger.info(f"Download completed. Successful: {successful}, Failed: {failed}")
 
-    def update_daily_data(self):
+    def update_daily_data(self, end_date=None):
         """Update data for all ETFs (incremental)."""
-        logger.info("Starting daily incremental update...")
+        logger.info(f"Starting daily incremental update (up to {end_date if end_date else 'today'})...")
         total_symbols = len(self.etf_symbols)
         successful = 0
         failed = 0
@@ -245,10 +245,14 @@ class USEtfDownloader:
                         logger.info(f"Last date in DB: {last_date}, fetching from: {start_fetch_date}")
                         
                         # Check if already up to date (compare dates properly)
-                        today = datetime.now().date()
+                        if end_date:
+                            target_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                        else:
+                            target_date = datetime.now().date()
+                            
                         start_date_obj = datetime.strptime(start_fetch_date, "%Y-%m-%d").date()
-                        if start_date_obj > today:
-                            logger.info(f"Up to date. Last: {last_date}, Start would be: {start_fetch_date}, Today: {today}")
+                        if start_date_obj > target_date:
+                            logger.info(f"Up to date. Last: {last_date}, Start would be: {start_fetch_date}, Target: {target_date}")
                             successful += 1
                             continue
                     else:
@@ -262,10 +266,15 @@ class USEtfDownloader:
                         try:
                             # Use end=None to get latest available data
                             # yfinance end parameter is exclusive, so using today's date would miss today's data
+                            # yf.download end parameter is exclusive, so add 1 day if end_date is provided
+                            fetch_end = None
+                            if end_date:
+                                fetch_end = (datetime.strptime(end_date, "%Y-%m-%d") + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                                
                             data = yf.download(
                                 symbol, 
                                 start=start_fetch_date, 
-                                end=None,  # Get latest available data
+                                end=fetch_end, 
                                 auto_adjust=False,
                                 progress=False,
                                 multi_level_index=False
@@ -346,10 +355,18 @@ def main():
     import sys
     downloader = USEtfDownloader()
     
-    if len(sys.argv) > 1 and sys.argv[1] == '--full-refresh':
-        logger.info("Performing FULL REFRESH (Truncate & Download)...")
-        downloader.truncate_table()
-        downloader.download_and_save_data()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--full-refresh':
+            logger.info("Performing FULL REFRESH (Truncate & Download)...")
+            downloader.truncate_table()
+            downloader.download_and_save_data()
+        elif sys.argv[1].startswith("--end-date="):
+            end_date = sys.argv[1].split("=")[1]
+            logger.info(f"Performing DAILY UPDATE up to {end_date}...")
+            downloader.update_daily_data(end_date=end_date)
+        else:
+            logger.info("Performing DAILY UPDATE (Incremental)...")
+            downloader.update_daily_data()
     else:
         logger.info("Performing DAILY UPDATE (Incremental)...")
         downloader.update_daily_data()

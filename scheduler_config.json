@@ -30,13 +30,13 @@
       "signal_generation": {
         "frequency": "weekly",
         "day_of_week": "monday",
-        "time": "15:52",
+        "time": "09:43",
         "skip_holidays": true
       },
       "signal_execution": {
         "frequency": "weekly",
         "execution_rule": "first_trading_day_of_week",
-        "time": "10:20",
+        "time": "10:00",
         "skip_holidays": true
       },
       "generator_module": "Strategies.Rotation_ETF.services.signal_generator",
@@ -45,7 +45,7 @@
       "strategy_table": "etf_saved_strategy"
     },
     "rotation_stocks": {
-      "enabled": true,
+      "enabled": false,
       "signal_generation": {
         "frequency": "weekly",
         "day_of_week": "monday",
@@ -67,7 +67,7 @@
       "enabled": true,
       "data_fetch": {
         "frequency": "daily",
-        "time": "23:40",
+        "time": "16:00",
         "skip_holidays": true,
         "skip_weekends": true
       },

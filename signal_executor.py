@@ -531,16 +531,21 @@ class SignalExecutor:
     # MAIN EXECUTION WORKFLOW
     # ========================================================================
     
-    def execute_etf_signals(self):
-        """Execute all ETF signals"""
+    def execute_etf_signals(self, user_id: str = None):
+        """
+        Execute ETF signals
+        
+        Args:
+            user_id: Optional user_id to filter signals
+        """
         print("\n" + "="*80)
-        print("ETF SIGNAL EXECUTION")
+        print(f"ETF SIGNAL EXECUTION {'(Filtered by User: ' + user_id + ')' if user_id else ''}")
         print("="*80 + "\n")
         
         # Step 1: Fetch signals
-        print("STEP 1: Fetching ETF signals from database...")
+        print(f"STEP 1: Fetching ETF signals from database...")
         print("-" * 80)
-        signals = self.fetch_etf_signals()
+        signals = self.fetch_etf_signals(user_id=user_id)
         
         if not signals:
             print("⚠️  No ETF signals to execute\n")
@@ -601,16 +606,21 @@ class SignalExecutor:
         print("ETF SIGNAL EXECUTION COMPLETE")
         print("="*80 + "\n")
     
-    def execute_stock_signals(self):
-        """Execute all Stock signals"""
+    def execute_stock_signals(self, user_id: str = None):
+        """
+        Execute Stock signals
+        
+        Args:
+            user_id: Optional user_id to filter signals
+        """
         print("\n" + "="*80)
-        print("STOCK SIGNAL EXECUTION")
+        print(f"STOCK SIGNAL EXECUTION {'(Filtered by User: ' + user_id + ')' if user_id else ''}")
         print("="*80 + "\n")
         
         # Step 1: Fetch signals
-        print("STEP 1: Fetching Stock signals from database...")
+        print(f"STEP 1: Fetching Stock signals from database...")
         print("-" * 80)
-        signals = self.fetch_stock_signals()
+        signals = self.fetch_stock_signals(user_id=user_id)
         
         if not signals:
             print("⚠️  No Stock signals to execute\n")
@@ -671,12 +681,26 @@ class SignalExecutor:
         print("STOCK SIGNAL EXECUTION COMPLETE")
         print("="*80 + "\n")
     
-    def execute_all_signals(self):
-        """Execute both ETF and Stock signals"""
-        self.execute_etf_signals()
-        self.execute_stock_signals()
+    def execute_all_signals(self, user_id: str = None):
+        """
+        Execute both ETF and Stock signals
+        
+        Args:
+            user_id: Optional user_id to filter signals
+        """
+        self.execute_etf_signals(user_id=user_id)
+        self.execute_stock_signals(user_id=user_id)
 
 
 if __name__ == "__main__":
+    import sys
+    
+    # Parse command line arguments
+    user_id = None
+    for arg in sys.argv:
+        if arg.startswith("--user-id="):
+            user_id = arg.split("=")[1]
+            break
+            
     executor = SignalExecutor()
-    executor.execute_all_signals()
+    executor.execute_all_signals(user_id=user_id)

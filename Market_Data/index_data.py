@@ -498,19 +498,24 @@ def main():
     downloader = IndexDataDownloader()
     
     try:
-        # Check if update flag is passed
-        if len(sys.argv) > 1 and sys.argv[1] == "--update":
-            logger.info("Updating missing dates...")
-            # Update missing dates from last date in DB to today
-            downloader.update_missing_dates()
+        if len(sys.argv) > 1:
+            if sys.argv[1] == "--update":
+                logger.info("Updating missing dates...")
+                downloader.update_missing_dates()
+            elif sys.argv[1].startswith("--end-date="):
+                end_date = sys.argv[1].split("=")[1]
+                logger.info(f"Updating missing dates up to {end_date}...")
+                downloader.update_missing_dates(end_date=end_date)
+            else:
+                logger.info("Starting NIFTY 50 Data Downloader")
+                logger.info(f"Date range: {downloader.start_date} to {downloader.end_date}")
+                downloader.download_nifty50()
+                logger.info("Checking for missing dates...")
+                downloader.update_missing_dates()
         else:
             logger.info("Starting NIFTY 50 Data Downloader")
             logger.info(f"Date range: {downloader.start_date} to {downloader.end_date}")
-            
-            # Download NIFTY 50 data
             downloader.download_nifty50()
-            
-            # Update any missing dates
             logger.info("Checking for missing dates...")
             downloader.update_missing_dates()
         
