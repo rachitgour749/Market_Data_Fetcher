@@ -2,6 +2,14 @@
 
 Automated signal generation and execution scheduler with configuration-driven timing, trading day awareness, and multi-strategy support.
 
+
+# EXECUTE SIGNAL FOR PARTICULAR CLIENT
+
+```bash
+python signal_executor.py --user-id=dummy_user
+```
+
+
 ## Features
 
 - ✅ **Configuration-Driven**: All strategy schedules defined in `scheduler_config.json`
